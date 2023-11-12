@@ -1,26 +1,43 @@
 package main;
 
-import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import inputs.KeyboardInputs;
 import inputs.MouseInputs;
-import java.util.Random;
 
 public class GamePanel extends JPanel {
 
     private MouseInputs mouseInputs;
     private float xDelta = 100, yDelta = 100;
-    private float xDir = 0.03f, yDir = 0.03f;
-    private Color color = new Color(150, 20, 90);
-    private Random random;
+    private BufferedImage img;
 
     public GamePanel() {
-        random = new Random();
+        importImg();
+        setPanelSize();
         mouseInputs = new MouseInputs(this);
         addKeyListener(new KeyboardInputs(this));
         addMouseListener(mouseInputs);
         addMouseMotionListener(mouseInputs);
+    }
+
+    private void importImg() {
+        InputStream is = getClass().getResourceAsStream("../player_sprites.png");
+        System.out.println(this.getClass().getResource("").getPath());
+        try {
+            img = ImageIO.read(is);
+        } catch (Exception e) {
+            System.out.println("Youuuuuu");
+        }
+    }
+
+    private void setPanelSize() {
+        setPreferredSize(new Dimension(1280, 800));
     }
 
     public void changeXDelta(int value) {
@@ -38,25 +55,6 @@ public class GamePanel extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        updateRectangle();
-        g.setColor(color);
-        g.fillRect((int) xDelta, (int) yDelta, 200, 50);
-    }
-
-    private void updateRectangle() {
-        xDelta += xDir;
-        if (xDelta > 400 || xDelta < 0) {
-            xDir *= -1;
-            color = getRndColor();
-        }
-        yDelta += yDir;
-        if (yDelta > 400 || yDelta < 0) {
-            color = getRndColor();
-            yDir *= -1;
-        }
-    }
-
-    private Color getRndColor() {
-        return new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
+        // g.drawImage(null, x, y, null);
     }
 }
